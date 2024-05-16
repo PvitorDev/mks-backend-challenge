@@ -8,21 +8,27 @@ import {
   Delete,
   Query,
   UseGuards,
+  Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto, UpdateMovieDto } from './dto';
 import { Movie } from './entities';
 import { JwtAuthGuard } from '../auth/guards';
 import { ApiTags } from '@nestjs/swagger';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('Movies')
 @Controller('movies')
 export class MoviesController {
-  constructor(private readonly moviesService: MoviesService) {}
+  constructor(
+    private readonly moviesService: MoviesService,
+    private readonly userService: UserService,
+  ) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async findAll(@Query('page') page: number = 1): Promise<Movie[]> {
+  async findAll(@Query('page') page: number = 1): Promise<any> {
     return this.moviesService.findAll(page);
   }
 
@@ -32,24 +38,37 @@ export class MoviesController {
     return this.moviesService.findOne(id);
   }
 
-  @Post()
+  @Post('create')
   @UseGuards(JwtAuthGuard)
-  async create(@Body() createMovieDto: CreateMovieDto): Promise<Movie> {
+  async create(
+    @Body() createMovieDto: CreateMovieDto,
+    @Req() req,
+  ): Promise<Movie> {
+    createMovieDto.addedByUser = req.user.id;
     return this.moviesService.create(createMovieDto);
   }
 
-  @Put(':id')
+  @Put('update/:id')
   @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: number,
+    @Req() req,
     @Body() updateMovieDto: UpdateMovieDto,
   ): Promise<Movie> {
-    return this.moviesService.update(id, updateMovieDto);
+    const isOwner = await this.userService.ownerMovieAdd(req.user.id, id);
+    if (!isOwner) {
+      throw new UnauthorizedException();
+    }
+    return await this.moviesService.update(id, updateMovieDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   @UseGuards(JwtAuthGuard)
-  async remove(@Param('id') id: number): Promise<void> {
+  async remove(@Param('id') id: number, @Req() req): Promise<void> {
+    const isOwner = await this.userService.ownerMovieAdd(req.user.id, id);
+    if (!isOwner) {
+      throw new UnauthorizedException();
+    }
     return this.moviesService.remove(id);
   }
 }

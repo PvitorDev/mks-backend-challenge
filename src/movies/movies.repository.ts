@@ -18,9 +18,7 @@ export class MoviesRepository extends Repository<Movie> {
   }
 
   async findMovieById(id: number): Promise<Movie | undefined> {
-    return this.movieRepository.findOne({
-      where: { id },
-    });
+    return this.movieRepository.findOneBy({ id });
   }
 
   async findMovieByTitle(title: string): Promise<Movie | undefined> {
@@ -38,9 +36,10 @@ export class MoviesRepository extends Repository<Movie> {
     id: number,
     updateMovieDto: UpdateMovieDto,
   ): Promise<Movie | undefined> {
+    console.log(id, updateMovieDto);
     await this.movieRepository.update(id, updateMovieDto);
-    return this.movieRepository.findOne({
-      where: { id },
+    return this.movieRepository.findOneBy({
+      id,
     });
   }
 

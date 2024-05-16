@@ -21,6 +21,7 @@ export class UserRepository extends Repository<User> {
     return this.userRepository.findOne({
       where: { id },
       select: ['id', 'username', 'email'],
+      relations: ['moviesAdded'],
     });
   }
 

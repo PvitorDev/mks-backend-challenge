@@ -60,4 +60,13 @@ export class UserService {
     }
     await this.userRepository.removeUser(id);
   }
+
+  async ownerMovieAdd(id: number, idMovie: number): Promise<any> {
+    const user = await this.findUserById(id);
+    if (!user) {
+      throw new NotFoundException();
+    }
+    const exists = user.moviesAdded.some((movie) => movie.id === idMovie);
+    return exists;
+  }
 }

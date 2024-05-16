@@ -49,19 +49,19 @@ export class UserController {
     return this.userService.createUser(createUserDto);
   }
   @ApiUpdateUser()
-  @Put(':id')
+  @Put('/update')
   @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id') id: number,
+    @Req() req,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return this.userService.updateUser(id, updateUserDto);
+    return this.userService.updateUser(req.user.id, updateUserDto);
   }
 
   @ApiDeleteUser()
-  @Delete(':id')
+  @Delete('/delete')
   @UseGuards(JwtAuthGuard)
-  async remove(@Param('id') id: number): Promise<void> {
-    return this.userService.removeUser(id);
+  async remove(@Req() req): Promise<void> {
+    return this.userService.removeUser(req.user.id);
   }
 }

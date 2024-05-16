@@ -12,9 +12,21 @@ export class UpdateMovieDto {
 
   @IsNumber()
   @ApiProperty()
-  year?: number;
+  yearRelease?: number;
 
   @IsString()
   @ApiProperty()
   genre?: string;
+
+  @IsString()
+  @ApiProperty()
+  synopsis?: string;
+
+  @IsString()
+  @ApiProperty()
+  ageRating: string;
+
+  @IsString()
+  @ApiProperty()
+  rating?: string;
 }

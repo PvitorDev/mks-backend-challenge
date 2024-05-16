@@ -7,19 +7,33 @@ import { Movie } from './entities';
 export class MoviesService {
   constructor(private readonly moviesRepository: MoviesRepository) {}
 
-  async findAll(page: number = 1): Promise<Movie[]> {
+  async findAll(page: number = 1): Promise<any> {
     Number.isNaN(page) ? (page = 1) : page;
 
     const perPage = 10;
     const skip = (page - 1) * perPage;
-    return this.moviesRepository.find({
+    const movies = await this.moviesRepository.find({
       take: perPage,
       skip,
+      relations: ['addedByUser'],
+    });
+    return movies.map((movie) => {
+      return {
+        ...movie,
+        addedByUser: {
+          ...movie.addedByUser,
+          email: null,
+          createdAt: null,
+          updatedAt: null,
+          password: null,
+        },
+      };
     });
   }
 
   async findOne(id: number): Promise<Movie> {
     const movie = await this.moviesRepository.findMovieById(id);
+
     if (!movie) {
       throw new NotFoundException(`Movie with ID ${id} not found.`);
     }
