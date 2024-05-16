@@ -25,6 +25,12 @@ export class UserService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const userExist = await this.userRepository.findUserByEmail(
+      createUserDto.email,
+    );
+    if (userExist) {
+      throw new NotFoundException();
+    }
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const user = this.userRepository.createUser({
       ...createUserDto,
@@ -36,6 +42,12 @@ export class UserService {
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findUserById(id);
     if (!user) {
+      throw new NotFoundException();
+    }
+    const userExist = await this.userRepository.findUserByEmail(
+      updateUserDto.email,
+    );
+    if (userExist) {
       throw new NotFoundException();
     }
     return this.userRepository.updateUser(id, updateUserDto);

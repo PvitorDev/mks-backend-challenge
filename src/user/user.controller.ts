@@ -13,7 +13,7 @@ import { CreateUserDto, UpdateUserDto } from './dto';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards';
 import { User } from './entities';
-import { IsPublic } from 'src/auth/decorators';
+import { IsPublic } from '../auth/decorators';
 import { ApiTags } from '@nestjs/swagger';
 
 import {
