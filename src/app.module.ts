@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/';
 import { APP_GUARD } from '@nestjs/core';
+import { MoviesModule } from './movies/movies.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -18,6 +19,7 @@ dotenv.config();
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: Boolean(process.env.DB_SYNCH),
     }),
+    MoviesModule,
   ],
   controllers: [],
   providers: [
