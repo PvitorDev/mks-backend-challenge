@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto/index';
 import { User } from './entities';
 import { UserRepository } from './user.repository';
@@ -11,7 +15,7 @@ export class UserService {
   async findUserById(id: number): Promise<User> {
     const user = await this.userRepository.findUserById(id);
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException(`User with ID ${id} not found.`);
     }
     return user;
   }
@@ -19,7 +23,7 @@ export class UserService {
   async findUserByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findUserByEmail(email);
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException(`User with email ${email} not found.`);
     }
     return user;
   }
@@ -29,10 +33,12 @@ export class UserService {
       createUserDto.email,
     );
     if (userExist) {
-      throw new NotFoundException();
+      throw new ConflictException(
+        `User with email ${createUserDto.email} already exists.`,
+      );
     }
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    const user = this.userRepository.createUser({
+    const user = await this.userRepository.createUser({
       ...createUserDto,
       password: hashedPassword,
     });
@@ -42,13 +48,15 @@ export class UserService {
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findUserById(id);
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException(`User with ID ${id} not found.`);
     }
-    const userExist = await this.userRepository.findUserByEmail(
+    const userByEmail = await this.userRepository.findUserByEmail(
       updateUserDto.email,
     );
-    if (userExist) {
-      throw new NotFoundException();
+    if (userByEmail && userByEmail.id !== id) {
+      throw new ConflictException(
+        `User with email ${updateUserDto.email} already exists.`,
+      );
     }
     return this.userRepository.updateUser(id, updateUserDto);
   }
@@ -56,17 +64,16 @@ export class UserService {
   async removeUser(id: number): Promise<void> {
     const user = await this.findUserById(id);
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException(`User with ID ${id} not found.`);
     }
     await this.userRepository.removeUser(id);
   }
 
-  async ownerMovieAdd(id: number, idMovie: number): Promise<any> {
+  async ownerMovieAdd(id: number, idMovie: number): Promise<boolean> {
     const user = await this.findUserById(id);
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException(`User with ID ${id} not found.`);
     }
-    const exists = user.moviesAdded.some((movie) => movie.id === idMovie);
-    return exists;
+    return user.moviesAdded.some((movie) => movie.id === idMovie);
   }
 }

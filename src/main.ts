@@ -26,7 +26,7 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
     allowedHeaders: 'Content-Type,Authorization',
   });
-
+  app.useGlobalFilters();
   const config = new DocumentBuilder()
     .setTitle('API - MKS Teste - Sistema de Catálogo de Filmes')
     .setDescription('Sistema de Catálogo de Filmes com Autenticação JWT')

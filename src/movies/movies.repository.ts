@@ -36,7 +36,6 @@ export class MoviesRepository extends Repository<Movie> {
     id: number,
     updateMovieDto: UpdateMovieDto,
   ): Promise<Movie | undefined> {
-    console.log(id, updateMovieDto);
     await this.movieRepository.update(id, updateMovieDto);
     return this.movieRepository.findOneBy({
       id,

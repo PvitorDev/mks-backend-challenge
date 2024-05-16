@@ -45,7 +45,7 @@ export class Movie {
   rating: string;
 
   @ManyToOne(() => User, (user) => user.moviesAdded)
-  @ApiProperty()
+  @ApiProperty({ type: () => User })
   addedByUser?: User;
 
   @CreateDateColumn()
