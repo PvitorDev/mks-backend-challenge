@@ -5,7 +5,7 @@ import { CreateMovieDto, UpdateMovieDto } from './dto';
 import { Movie } from './entities';
 
 @Injectable()
-export class MovieRepository extends Repository<Movie> {
+export class MoviesRepository extends Repository<Movie> {
   constructor(
     @InjectRepository(Movie)
     private movieRepository: Repository<Movie>,
