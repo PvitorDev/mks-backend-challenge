@@ -811,6 +811,11 @@
   resolved "https://registry.yarnpkg.com/@microsoft/tsdoc/-/tsdoc-0.14.2.tgz#c3ec604a0b54b9a9b87e9735dfc59e1a5da6a5fb"
   integrity sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==
 
+"@nestjs/cache-manager@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/cache-manager/-/cache-manager-2.2.2.tgz#4b0e7c4112c7b8c2a869d64f998aaf8a1bf0040d"
+  integrity sha512-+n7rpU1QABeW2WV17Dl1vZCG3vWjJU1MaamWgZvbGxYE9EeCM0lVLfw3z7acgDTNwOy+K68xuQPoIMxD0bhjlA==
+
 "@nestjs/cli@^10.0.0":
   version "10.3.2"
   resolved "https://registry.yarnpkg.com/@nestjs/cli/-/cli-10.3.2.tgz#42d2764ead6633e278c55d42de871b4cc1db002b"
@@ -985,6 +990,15 @@
   version "1.5.14"
   resolved "https://registry.yarnpkg.com/@redis/client/-/client-1.5.14.tgz#1107893464d092f140d77c468b018a6ed306a180"
   integrity sha512-YGn0GqsRBFUQxklhY7v562VMOP0DcmlrHHs3IV1mFE3cbxe31IITUkqhBcIhVSI/2JqtWAJXg5mjV4aU+zD0HA==
+  dependencies:
+    cluster-key-slot "1.1.2"
+    generic-pool "3.9.0"
+    yallist "4.0.0"
+
+"@redis/client@1.5.16":
+  version "1.5.16"
+  resolved "https://registry.yarnpkg.com/@redis/client/-/client-1.5.16.tgz#1d5919077a06a4b935b0e4bef9e036eef1a10371"
+  integrity sha512-X1a3xQ5kEMvTib5fBrHKh6Y+pXbeKXqziYuxOUo1ojQNECg4M5Etd1qqyhMap+lFUOAh8S7UYevgJHOm4A+NOg==
   dependencies:
     cluster-key-slot "1.1.2"
     generic-pool "3.9.0"
@@ -2676,6 +2690,13 @@ bytes@3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.2.tgz#8b0beeb98605adf1b128fa4386403c009e0221a5"
   integrity sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==
+
+cache-manager-redis-store@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/cache-manager-redis-store/-/cache-manager-redis-store-3.0.1.tgz#8eeb211212763d04cef4058666182d624f714299"
+  integrity sha512-o560kw+dFqusC9lQJhcm6L2F2fMKobJ5af+FoR2PdnMVdpQ3f3Bz6qzvObTGyvoazQJxjQNWgMQeChP4vRTuXQ==
+  dependencies:
+    redis "^4.3.1"
 
 cache-manager@^5.5.2:
   version "5.5.2"
@@ -5899,6 +5920,18 @@ rechoir@^0.6.2:
   integrity sha512-HFM8rkZ+i3zrV+4LQjwQ0W+ez98pApMGM3HUrN04j3CqzPOzl9nmP15Y8YXNm8QHGv/eacOVEjqhmWpkRV0NAw==
   dependencies:
     resolve "^1.1.6"
+
+redis@^4.3.1:
+  version "4.6.14"
+  resolved "https://registry.yarnpkg.com/redis/-/redis-4.6.14.tgz#599e49b65816c56a6683f6b19dc374c8e786d091"
+  integrity sha512-GrNg/e33HtsQwNXL7kJT+iNFPSwE1IPmd7wzV3j4f2z0EYxZfZE7FVTmUysgAtqQQtg5NXF5SNLR9OdO/UHOfw==
+  dependencies:
+    "@redis/bloom" "1.2.0"
+    "@redis/client" "1.5.16"
+    "@redis/graph" "1.1.1"
+    "@redis/json" "1.0.6"
+    "@redis/search" "1.1.6"
+    "@redis/time-series" "1.0.5"
 
 redis@^4.6.13:
   version "4.6.13"
