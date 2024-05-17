@@ -5,14 +5,15 @@ import { redisStore } from 'cache-manager-redis-store';
 export const RedisOptions: CacheModuleAsyncOptions = {
   isGlobal: true,
   imports: [ConfigModule],
-  useFactory: async (configService: ConfigService) => {
+  useFactory: async () => {
     const store = await redisStore({
       socket: {
-        host: configService.get<string>('REDISHOST'),
-        port: parseInt(configService.get<string>('REDISPORT')!),
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT, 10),
       },
-      username: configService.get<string>('REDISUSER'),
-      password: configService.get<string>('REDISPASSWORD'),
+      ttl: 10,
+      username: process.env.REDIS_USER,
+      password: process.env.REDIS_PASSWORD,
     });
     return {
       store: () => store,

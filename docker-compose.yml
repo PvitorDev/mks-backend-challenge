@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mks-challenge-app:
+    build: .
+    container_name: mks-backend-challenge
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+
+  redis:
+    image: redis:6
+    container_name: redis
+
+volumes:
+  postgres-data:
+  redis-data:

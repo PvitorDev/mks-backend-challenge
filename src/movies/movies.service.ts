@@ -3,18 +3,22 @@ import {
   NotFoundException,
   Logger,
   BadRequestException,
+  Inject,
 } from '@nestjs/common';
 import { MoviesRepository } from './movies.repository';
 import { CreateMovieDto, UpdateMovieDto } from './dto';
 import { Movie } from './entities';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'src/generated/i18n.generated';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class MoviesService {
   constructor(
     private readonly moviesRepository: MoviesRepository,
     private readonly i18n: I18nService<I18nTranslations>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   private readonly logger: Logger = new Logger(MoviesService.name);
 
@@ -50,6 +54,12 @@ export class MoviesService {
 
   async findOne(id: number): Promise<Movie> {
     const movie = await this.moviesRepository.findMovieById(id);
+    const cachedMovie = await this.cacheManager.get<Movie>(
+      `/api/v1/movies/${id}`,
+    );
+    if (cachedMovie) {
+      return cachedMovie;
+    }
     if (!movie) {
       const messageError = this.i18n.t('errors.MOVIE_NOT_FOUND_WITH_ID', {
         lang: I18nContext.current().lang,
@@ -63,6 +73,7 @@ export class MoviesService {
 
   async create(createMovieDto: CreateMovieDto): Promise<Movie> {
     try {
+      await this.cacheManager.del('movies/all');
       return await this.moviesRepository.createMovie(createMovieDto);
     } catch (error) {
       const messageError = this.i18n.t('errors.MOVIE_FAILED_TO_CREATE', {
@@ -85,6 +96,11 @@ export class MoviesService {
       throw new NotFoundException(messageError);
     }
     try {
+      const cachedMovie = await this.cacheManager.get(`/api/v1/movies/${id}`);
+      if (cachedMovie) {
+        await this.cacheManager.del(`/api/v1/movies/${id}`);
+      }
+      await this.cacheManager.del('movies/all');
       return await this.moviesRepository.updateMovie(id, updateMovieDto);
     } catch (error) {
       const messageError = this.i18n.t('errors.MOVIE_FAILED_TO_UPDATE', {
@@ -108,6 +124,11 @@ export class MoviesService {
       throw new NotFoundException(messageError);
     }
     try {
+      const cachedMovie = await this.cacheManager.get(`/api/v1/movies/${id}`);
+      if (cachedMovie) {
+        await this.cacheManager.del(`/api/v1/movies/${id}`);
+      }
+      await this.cacheManager.del('movies/all');
       await this.moviesRepository.removeMovie(id);
     } catch (error) {
       const messageError = this.i18n.t('errors.MOVIE_FAILED_TO_REMOVE', {

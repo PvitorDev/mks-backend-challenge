@@ -6,6 +6,7 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/user/entities';
@@ -14,6 +15,7 @@ import { User } from 'src/user/entities';
 export class Movie {
   @PrimaryGeneratedColumn()
   @ApiProperty()
+  @Index()
   id: number;
 
   @Column()

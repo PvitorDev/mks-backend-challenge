@@ -7,10 +7,8 @@ import * as dotenv from 'dotenv';
 
 async function bootstrap() {
   dotenv.config();
-  const loggerLevelString = process.env.LOGGER_LEVEL;
-  const loggerLevel = loggerLevelString.replace(/'/g, '"');
   const app = await NestFactory.create(AppModule, {
-    logger: JSON.parse(loggerLevel) ?? ['log', 'error'],
+    logger: ['log'],
   });
   app.useGlobalPipes(
     new ValidationPipe({

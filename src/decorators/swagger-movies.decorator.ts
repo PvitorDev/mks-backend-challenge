@@ -5,6 +5,7 @@ import {
   ApiResponse,
   ApiBody,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { CreateMovieDto, UpdateMovieDto } from '../movies/dto';
 import {
@@ -30,7 +31,13 @@ export function ApiGetMovieById() {
 export function ApiGetMovieAll() {
   return applyDecorators(
     ApiBearerAuth(),
-    ApiOperation({ summary: 'Get all Movie by ID' }),
+    ApiOperation({ summary: 'Get all Movie ' }),
+    ApiQuery({
+      name: 'page',
+      required: false,
+      type: Number,
+      description: ' Page number for pagination (10)',
+    }),
     ApiResponse({
       status: 200,
       description: 'The found record',

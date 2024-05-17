@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ConflictException,
   Logger,
+  Inject,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto/index';
 import { User } from './entities';
@@ -10,16 +11,22 @@ import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from 'src/generated/i18n.generated';
-
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly i18n: I18nService<I18nTranslations>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   private readonly logger: Logger = new Logger(UserService.name);
 
   async findUserById(id: number): Promise<User> {
+    const cachedUser = await this.cacheManager.get<User>(`/api/v1/user/${id}`);
+    if (cachedUser) {
+      return cachedUser;
+    }
     const user = await this.userRepository.findUserById(id);
     if (!user) {
       const messageError = this.i18n.t('errors.USER_NOT_FOUND_WITH_ID', {
@@ -86,11 +93,16 @@ export class UserService {
       this.logger.error(messageError);
       throw new ConflictException(messageError);
     }
+    const cachedUser = await this.cacheManager.get(`/api/v1/user/${id}`);
+    if (cachedUser) {
+      await this.cacheManager.del(`/api/v1/user/${id}`);
+    }
     return this.userRepository.updateUser(id, updateUserDto);
   }
 
   async removeUser(id: number): Promise<void> {
     const user = await this.findUserById(id);
+
     if (!user) {
       const messageError = this.i18n.t('errors.USER_NOT_FOUND_WITH_ID', {
         lang: I18nContext.current().lang,
@@ -98,6 +110,10 @@ export class UserService {
       });
       this.logger.error(messageError);
       throw new NotFoundException(messageError);
+    }
+    const cachedUser = await this.cacheManager.get(`/api/v1/user/${id}`);
+    if (cachedUser) {
+      await this.cacheManager.del(`/api/v1/user/${id}`);
     }
     await this.userRepository.removeUser(id);
   }

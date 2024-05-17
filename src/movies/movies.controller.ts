@@ -25,6 +25,8 @@ import {
   ApiDeleteMovie,
   ApiGetMovieAll,
 } from '../decorators';
+import { CacheKey } from '@nestjs/cache-manager';
+
 @ApiTags('Movies')
 @Controller('movies')
 export class MoviesController {
@@ -33,21 +35,22 @@ export class MoviesController {
     private readonly userService: UserService,
   ) {}
 
-  @Get()
+  @Get('/all')
   @UseGuards(JwtAuthGuard)
+  @CacheKey('movies/all')
   @ApiGetMovieAll()
   async findAll(@Query('page') page: number = 1): Promise<any> {
     return this.moviesService.findAll(page);
   }
 
-  @Get(':id')
+  @Get('/:id')
   @UseGuards(JwtAuthGuard)
   @ApiGetMovieById()
   async findOne(@Param('id') id: number): Promise<Movie> {
     return this.moviesService.findOne(id);
   }
 
-  @Post('create')
+  @Post('/create')
   @UseGuards(JwtAuthGuard)
   @ApiCreateMovie()
   async create(
@@ -58,7 +61,7 @@ export class MoviesController {
     return this.moviesService.create(createMovieDto);
   }
 
-  @Put('update/:id')
+  @Put('/update/:id')
   @UseGuards(JwtAuthGuard)
   @ApiUpdateMovie()
   async update(
@@ -73,7 +76,7 @@ export class MoviesController {
     return await this.moviesService.update(id, updateMovieDto);
   }
 
-  @Delete('delete/:id')
+  @Delete('/delete/:id')
   @UseGuards(JwtAuthGuard)
   @ApiDeleteMovie()
   async remove(@Param('id') id: number, @Req() req): Promise<void> {

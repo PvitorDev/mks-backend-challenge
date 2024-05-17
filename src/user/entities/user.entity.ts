@@ -5,6 +5,7 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Movie } from 'src/movies/entities';
@@ -20,6 +21,7 @@ export class User {
 
   @Column()
   @ApiProperty()
+  @Index()
   email: string;
 
   @Column()

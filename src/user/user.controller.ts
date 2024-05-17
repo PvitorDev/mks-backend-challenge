@@ -15,8 +15,6 @@ import { JwtAuthGuard } from '../auth/guards';
 import { User } from './entities';
 import { IsPublic } from '../auth/decorators';
 import { ApiTags } from '@nestjs/swagger';
-import { CacheInterceptor } from '@nestjs/cache-manager';
-import { UseInterceptors } from '@nestjs/common/decorators';
 
 import {
   ApiGetUserById,
@@ -28,12 +26,11 @@ import {
 
 @ApiTags('Users')
 @Controller('user')
-@UseInterceptors(CacheInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiGetUserById()
-  @Get(':id')
+  @Get('/:id')
   @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: number): Promise<User> {
     return this.userService.findUserById(id);
