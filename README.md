@@ -1,3 +1,7 @@
+## PROJETO FINALIZADO - DESAFIO
+
+[CLIQUE AQUI](src/README.md)
+
 # Diretrizes do desafio
 
 Por favor organize, design, teste, faça a documentação e deploy do seu código da forma como se ele fosse para produção, depois nos envie um link do repositório no Github.
