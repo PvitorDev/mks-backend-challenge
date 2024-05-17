@@ -8,7 +8,6 @@ steps:
         '--branch',
         'main',
         'https://github.com/PvitorDev/mks-backend-challenge',
-        '.',
       ]
 
   # Step 2: Install Node.js and Yarn.
