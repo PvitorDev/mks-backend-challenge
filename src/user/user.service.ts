@@ -2,20 +2,32 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  Logger,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto/index';
 import { User } from './entities';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
+import { I18nContext, I18nService } from 'nestjs-i18n';
+import { I18nTranslations } from 'src/generated/i18n.generated';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly i18n: I18nService<I18nTranslations>,
+  ) {}
+  private readonly logger: Logger = new Logger(UserService.name);
 
   async findUserById(id: number): Promise<User> {
     const user = await this.userRepository.findUserById(id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found.`);
+      const messageError = this.i18n.t('errors.USER_NOT_FOUND_WITH_ID', {
+        lang: I18nContext.current().lang,
+        args: { id },
+      });
+      this.logger.error(messageError);
+      throw new NotFoundException(messageError);
     }
     return user;
   }
@@ -23,7 +35,12 @@ export class UserService {
   async findUserByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findUserByEmail(email);
     if (!user) {
-      throw new NotFoundException(`User with email ${email} not found.`);
+      const messageError = this.i18n.t('errors.USER_NOT_FOUND_WITH_EMAIL', {
+        lang: I18nContext.current().lang,
+        args: { email },
+      });
+      this.logger.error(messageError);
+      throw new NotFoundException(messageError);
     }
     return user;
   }
@@ -33,9 +50,12 @@ export class UserService {
       createUserDto.email,
     );
     if (userExist) {
-      throw new ConflictException(
-        `User with email ${createUserDto.email} already exists.`,
-      );
+      const messageError = this.i18n.t('errors.USER_ALREADY_EXIST', {
+        lang: I18nContext.current().lang,
+        args: { email: createUserDto.email },
+      });
+      this.logger.error(messageError);
+      throw new ConflictException(messageError);
     }
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.userRepository.createUser({
@@ -48,15 +68,23 @@ export class UserService {
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findUserById(id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found.`);
+      const messageError = this.i18n.t('errors.USER_NOT_FOUND_WITH_ID', {
+        lang: I18nContext.current().lang,
+        args: { id },
+      });
+      this.logger.error(messageError);
+      throw new NotFoundException(messageError);
     }
     const userByEmail = await this.userRepository.findUserByEmail(
       updateUserDto.email,
     );
     if (userByEmail && userByEmail.id !== id) {
-      throw new ConflictException(
-        `User with email ${updateUserDto.email} already exists.`,
-      );
+      const messageError = this.i18n.t('errors.USER_ALREADY_EXIST', {
+        lang: I18nContext.current().lang,
+        args: { email: updateUserDto.email },
+      });
+      this.logger.error(messageError);
+      throw new ConflictException(messageError);
     }
     return this.userRepository.updateUser(id, updateUserDto);
   }
@@ -64,7 +92,12 @@ export class UserService {
   async removeUser(id: number): Promise<void> {
     const user = await this.findUserById(id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found.`);
+      const messageError = this.i18n.t('errors.USER_NOT_FOUND_WITH_ID', {
+        lang: I18nContext.current().lang,
+        args: { id },
+      });
+      this.logger.error(messageError);
+      throw new NotFoundException(messageError);
     }
     await this.userRepository.removeUser(id);
   }
@@ -72,7 +105,12 @@ export class UserService {
   async ownerMovieAdd(id: number, idMovie: number): Promise<boolean> {
     const user = await this.findUserById(id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found.`);
+      const messageError = this.i18n.t('errors.USER_NOT_FOUND_WITH_ID', {
+        lang: I18nContext.current().lang,
+        args: { id },
+      });
+      this.logger.error(messageError);
+      throw new NotFoundException(messageError);
     }
     return user.moviesAdded.some((movie) => movie.id === idMovie);
   }

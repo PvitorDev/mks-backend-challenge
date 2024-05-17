@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UnauthorizedError } from './errors/unauthorized.error';
 import { User } from '../user/entities';
 import { UserService } from '../user/user.service';
 import { UserPayload } from '../user/interfaces';
@@ -38,7 +37,7 @@ export class AuthService {
       }
     }
 
-    throw new UnauthorizedError(
+    throw new UnauthorizedException(
       'Email address or password provided is incorrect.',
     );
   }
