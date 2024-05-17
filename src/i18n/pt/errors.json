@@ -1,0 +1,12 @@
+{
+  "USER_NOT_FOUND_WITH_EMAIL": "Usuário com o email '{email}' não encontrado.",
+  "USER_NOT_FOUND_WITH_ID": "Usuário com o ID {id} não encontrado.",
+  "USER_ALREADY_EXIST":"Usuário com o email {email} já existe.",
+  "USER_LOGIN_CREDENTIALS":"O endereço de email ou a senha fornecida está incorreta.",
+  "USER_UNAUTHORIZED":"Usuário não autorizado",
+  "INVALID_PAGE_NUMBER":"Número de página inválido",
+  "MOVIE_NOT_FOUND_WITH_ID":"Filme com o ID {id} não encontrado.",
+  "MOVIE_FAILED_TO_CREATE":"Falha ao criar o filme",
+  "MOVIE_FAILED_TO_UPDATE":"Falha ao atualizar o filme com o ID {id}",
+  "MOVIE_FAILED_TO_REMOVE":"Falha ao remover o filme com o ID {id}"
+  }

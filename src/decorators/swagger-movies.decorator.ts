@@ -7,8 +7,13 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { CreateMovieDto, UpdateMovieDto } from '../movies/dto';
-import { Movie } from '../movies/entities';
-
+import {
+  BadResponse,
+  FindAllMoviesResponse,
+  FindMovieByIdResponse,
+  MovieUpdateResponse,
+} from 'src/dto';
+import { CreateMovieResponse } from 'src/dto';
 export function ApiGetMovieById() {
   return applyDecorators(
     ApiBearerAuth(),
@@ -16,9 +21,9 @@ export function ApiGetMovieById() {
     ApiResponse({
       status: 200,
       description: 'The found record',
-      type: () => Movie,
+      type: () => FindMovieByIdResponse,
     }),
-    ApiResponse({ status: 404, description: 'Not Found' }),
+    ApiResponse({ status: 404, description: 'Not Found', type: BadResponse }),
   );
 }
 
@@ -29,9 +34,9 @@ export function ApiGetMovieAll() {
     ApiResponse({
       status: 200,
       description: 'The found record',
-      type: () => Movie,
+      type: () => FindAllMoviesResponse,
     }),
-    ApiResponse({ status: 404, description: 'Not Found' }),
+    ApiResponse({ status: 404, description: 'Not Found', type: BadResponse }),
   );
 }
 
@@ -42,9 +47,9 @@ export function ApiCreateMovie() {
     ApiResponse({
       status: 201,
       description: 'The record has been successfully created',
-      type: () => Movie,
+      type: () => CreateMovieResponse,
     }),
-    ApiResponse({ status: 400, description: 'Bad Request' }),
+    ApiResponse({ status: 400, description: 'Bad Request', type: BadResponse }),
   );
 }
 
@@ -57,9 +62,9 @@ export function ApiUpdateMovie() {
     ApiResponse({
       status: 200,
       description: 'The record has been successfully updated',
-      type: () => Movie,
+      type: () => MovieUpdateResponse,
     }),
-    ApiResponse({ status: 404, description: 'Not Found' }),
+    ApiResponse({ status: 404, description: 'Not Found', type: BadResponse }),
   );
 }
 
@@ -72,6 +77,6 @@ export function ApiDeleteMovie() {
       status: 200,
       description: 'The record has been successfully deleted',
     }),
-    ApiResponse({ status: 404, description: 'Not Found' }),
+    ApiResponse({ status: 404, description: 'Not Found', type: BadResponse }),
   );
 }

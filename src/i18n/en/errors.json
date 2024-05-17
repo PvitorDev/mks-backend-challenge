@@ -1,0 +1,12 @@
+{
+  "USER_NOT_FOUND_WITH_EMAIL": "User with email '{email}' not found.",
+  "USER_NOT_FOUND_WITH_ID": "User with ID {id} not found.",
+  "USER_ALREADY_EXIST":"User with email {email} already exists.",
+  "USER_LOGIN_CREDENTIALS":"Email address or password provided is incorrect.",
+  "USER_UNAUTHORIZED":"Unauthorized user",
+  "INVALID_PAGE_NUMBER":"Invalid page number",
+  "MOVIE_NOT_FOUND_WITH_ID":"Movie with ID {id} not found.",
+  "MOVIE_FAILED_TO_CREATE":"Failed to create movie",
+  "MOVIE_FAILED_TO_UPDATE":"Failed to update movie with ID {id}",
+  "MOVIE_FAILED_TO_REMOVE":"Failed to remove movie with ID {id}"
+}
