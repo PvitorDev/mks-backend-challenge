@@ -1,26 +1,23 @@
 steps:
-  # Build the container image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/PROJECT_ID/IMAGE', '.']
-  # Push the container image to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/PROJECT_ID/IMAGE']
-  # Deploy container image to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
+  # Step 1: Checkout code from the repository.
+  - name: 'gcr.io/cloud-builders/git'
     args:
       [
-        'run',
-        'deploy',
-        'SERVICE-NAME',
-        '--image',
-        'gcr.io/PROJECT_ID/IMAGE',
-        '--region',
-        'REGION',
-        '--platform',
-        'managed',
-        '--port',
-        '3000',
+        'clone',
+        '--single-branch',
+        '--branch',
+        'main',
+        'https://github.com/PvitorDev/mks-backend-challenge',
+        '.',
       ]
-images:
-  - gcr.io/PROJECT_ID/IMAGE
+
+  # Step 2: Install Node.js and Yarn.
+  - name: 'gcr.io/cloud-builders/yarn'
+    args: ['install']
+
+  # Step 3: Build the NestJS application.
+  - name: 'gcr.io/cloud-builders/yarn'
+    args: ['build']
+
+  - name: 'gcr.io/cloud-builders/yarn'
+    args: ['start:prod']
